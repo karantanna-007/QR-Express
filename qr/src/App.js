@@ -1,25 +1,37 @@
-// src/App.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { auth } from './firebase/firebaseConfig'; // Import Firebase Auth
-import useAuth from './hooks/useAuth'; // Import your custom hook for authentication
+import { onAuthStateChanged } from 'firebase/auth';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import FileUpload from './components/FileUpload';
 import './App.css';
 
 const App = () => {
-  const { currentUser } = useAuth(); // Use the custom hook to get the current user
+  const [user, setUser] = useState(null);
+
+  // Clear user state on app load to force login every time
+  useEffect(() => {
+    auth.signOut(); // This will force the user to log in every time the app loads
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser); // Update user state if authenticated
+    });
+
+    return () => unsubscribe(); // Cleanup subscription on unmount
+  }, []);
 
   return (
     <Router>
       <div className="App">
         <h1>QR EXPRESS</h1>
         <Routes>
-          <Route path="/" element={currentUser ? <FileUpload user={currentUser} /> : <Login />} />
+          <Route path="/" element={user ? <FileUpload user={user} /> : <Login />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>
-        {currentUser && (
+        {user && (
           <button onClick={() => auth.signOut()}>Logout</button>
         )}
       </div>

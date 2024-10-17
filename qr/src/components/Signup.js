@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { auth } from '../firebase/firebaseConfig';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import './Auth.css'; // Import CSS for styling
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -25,27 +26,31 @@ const Signup = () => {
   };
 
   return (
-    <div>
-      <h1>Sign Up</h1>
-      <form onSubmit={handleSignup}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Sign Up</button>
-      </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>Registration successful! Check your email for verification.</p>}
+    <div className="auth-container">
+      <div className="auth-box">
+        <h1 className="auth-title">Sign Up</h1>
+        <form onSubmit={handleSignup} className="auth-form">
+          <input
+            type="email"
+            className="auth-input"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            className="auth-input"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit" className="auth-btn">Sign Up</button>
+        </form>
+        {error && <p className="auth-error">{error}</p>}
+        {success && <p className="auth-success">Registration successful! Check your email for verification.</p>}
+      </div>
     </div>
   );
 };
